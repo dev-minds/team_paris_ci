@@ -71,7 +71,7 @@ node() {
         wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
             dir("./shopizer-2.9.0/sm-shop"){
                 sh """
-                   docker login -u phelun -p "docker_hub_passwd"
+                   docker login -u phelun -p docker_hub_passwd
                    docker build -t phelun/shopizer_app:v0."$BUILD_NUMBER" .
                    docker push <your_username>/shopizer_app:v0."$BUILD_NUMBER"
                 """
