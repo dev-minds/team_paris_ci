@@ -28,16 +28,16 @@ node() {
     
     }
 
-    stage('Build App') {
-        echo "${seperator60}\n${seperator20} Long build app \n${seperator60}"
-        wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
-            dir("./shopizer-2.9.0"){
-                sh """
-                   ./mvnw clean install
-                """
-            } 
-        }
-    }
+    // stage('Build App') {
+    //     echo "${seperator60}\n${seperator20} Long build app \n${seperator60}"
+    //     wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
+    //         dir("./shopizer-2.9.0"){
+    //             sh """
+    //                ./mvnw clean install
+    //             """
+    //         } 
+    //     }
+    // }
 
     stage('Package Artifacts') {
         echo "${seperator60}\n${seperator20} Look up artifacts \n${seperator60}"
@@ -60,6 +60,7 @@ node() {
         wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
             dir("./shopizer-2.9.0/sm-shop"){
                 sh """
+                   whoami 
                    docker login -u phelun -p "${docker_login}"
                    docker build -t phelun/shopizer_app:v0."$BUILD_NUMBER" .
                    docker push <your_username>/shopizer_app:v0."$BUILD_NUMBER"
