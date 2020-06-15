@@ -62,13 +62,10 @@ node() {
     //     }
     // }
 
-    // stage('Push image') {
-    //     /* Push image using withRegistry. */
-    //     docker.withRegistry('<your docker registry>', 'docker-private-credentials') {
-    //         app.push("${env.BUILD_NUMBER}")
-    //         app.push("latest")
-    //     }
-    // }
+    stage('Push image') {
+        /* Push image using withRegistry. */
+
+    }
 
 
     stage('Package Artifacts') {
@@ -77,11 +74,16 @@ node() {
             dir("./shopizer-2.9.0/sm-shop"){
                 sh """
                    whoami 
-                   docker login -u phelun -p ${docker_login}
+
                    docker build -t phelun/shopizer_app:v0."$BUILD_NUMBER" .
-                   docker push <your_username>/shopizer_app:v0."$BUILD_NUMBER"
+
                 """
             } 
+        }
+
+        docker.withRegistry('https://hub.docker.com/', 'docker_hub_creds') {
+            app.push("${env.BUILD_NUMBER}")
+            app.push("latest")
         }
     }
 }
