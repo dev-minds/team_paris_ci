@@ -55,13 +55,29 @@ node() {
         input 'Ready to build image ?'
     }
 
+    // stage('publish docker') {
+    //     withCredentials([usernamePassword(credentialsId: 'myregistry-login', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')]) {
+    //         // assumes Jib is configured to use the environment variables
+    //         sh "./mvnw -ntp jib:build"
+    //     }
+    // }
+
+    // stage('Push image') {
+    //     /* Push image using withRegistry. */
+    //     docker.withRegistry('<your docker registry>', 'docker-private-credentials') {
+    //         app.push("${env.BUILD_NUMBER}")
+    //         app.push("latest")
+    //     }
+    // }
+
+
     stage('Package Artifacts') {
         echo "${seperator60}\n${seperator20} Login to docker registry and push new images \n${seperator60}"
         wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
             dir("./shopizer-2.9.0/sm-shop"){
                 sh """
                    whoami 
-                   docker login -u phelun -p "${docker_login}"
+                   docker login -u phelun -p ${docker_login}
                    docker build -t phelun/shopizer_app:v0."$BUILD_NUMBER" .
                    docker push <your_username>/shopizer_app:v0."$BUILD_NUMBER"
                 """
