@@ -67,7 +67,7 @@ node() {
     }
 
     stage('Package Artifacts') {
-        echo "${seperator60}\n${seperator20} Login to docker registry and push new image \n${seperator60}"
+        echo "${seperator60}\n${seperator20} Login to docker registry and push new images \n${seperator60}"
         wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
             dir("./shopizer-2.9.0/sm-shop"){
                 sh """
@@ -78,5 +78,4 @@ node() {
             } 
         }
     }
-
 }
