@@ -24,5 +24,29 @@ node() {
         echo "${seperator60}\n${seperator20} Checking out Source Repo \n${seperator60}"
         deleteDir()
         checkout scm
+    
+    }
+
+    stage('Build App') {
+        echo "${seperator60}\n${seperator20} Long build app \n${seperator60}"
+        wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
+            dir("./shopizer-2.9.0"){
+                sh """
+                   ./mvnw clean install
+                """
+            } 
+        }
+    }
+
+    stage('Package Artifacts') {
+        echo "${seperator60}\n${seperator20} Look up artifacts \n${seperator60}"
+        wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
+            dir("./shopizer-2.9.0/sm-shop/target"){
+                sh """
+                   ./mvnw clean install
+                """
+            } 
+        }
+    
     }
 }
