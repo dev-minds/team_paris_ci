@@ -45,30 +45,37 @@ node() {
     }
 
     stage('publish docker') {
-        withCredentials([usernamePassword(credentialsId: 'docker_hub_creds', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')]) {
+        withCredentials([usernamePassword(credentialsId: 'docker_hub_creds', 
+            passwordVariable: 'DOCKER_REGISTRY_PWD', 
+            usernameVariable: 'DOCKER_REGISTRY_USER')]) {
+            wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
+                dir("./shopizer-2.9.0/sm-shop"){
+                    sh """
+                        docker build -t phelun/shopizer_app:v0."$BUILD_NUMBER" .
+                        docker login -u ${env.DOCKER_REGISTRY_USER} -p ${env.DOCKER_REGISTRY_PWD}
+                        docker push phelun/shopizer_app:v0."$BUILD_NUMBER
+                    """
+                } 
+            }
             // assumes Jib is configured to use the environment variables
-            sh """
-                docker build -t phelun/shopizer_app:v0."$BUILD_NUMBER" .
-                docker login -u ${env.DOCKER_REGISTRY_USER} -p ${env.DOCKER_REGISTRY_PWD}
-                docker push phelun/shopizer_app:v0."$BUILD_NUMBER
-            """
+
         }
     }
 
-    stage('Package Artifacts') {
-        echo "${seperator60}\n${seperator20} Login to docker registry and push new images \n${seperator60}"
-        wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
-            dir("./shopizer-2.9.0/sm-shop"){
-                sh """
-                   whoami 
-                   docker build -t phelun/shopizer_app:v0."$BUILD_NUMBER" .
-                """
-            } 
-        }
+    // stage('Package Artifacts') {
+    //     echo "${seperator60}\n${seperator20} Login to docker registry and push new images \n${seperator60}"
+    //     wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
+    //         dir("./shopizer-2.9.0/sm-shop"){
+    //             sh """
+    //                whoami 
+    //                docker build -t phelun/shopizer_app:v0."$BUILD_NUMBER" .
+    //             """
+    //         } 
+    //     }
 
-        docker.withRegistry('https://hub.docker.com/', 'docker_hub_creds') {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
-        }
-    }
+    //     docker.withRegistry('https://hub.docker.com/', 'docker_hub_creds') {
+    //         app.push("${env.BUILD_NUMBER}")
+    //         app.push("latest")
+    //     }
+    // }
 }
