@@ -49,4 +49,34 @@ node() {
         }
     
     }
+
+    stage('Package Artifacts') {
+        echo "${seperator60}\n${seperator20} Login to docker registry and push new image \n${seperator60}"
+        wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
+            dir("./shopizer-2.9.0/sm-shop/target"){
+                sh """
+                   ls -lart
+                """
+            } 
+        }
+    
+    }
+
+    stage("Build Image") {
+        input 'Ready to build image ?'
+    }
+
+    stage('Package Artifacts') {
+        echo "${seperator60}\n${seperator20} Login to docker registry and push new image \n${seperator60}"
+        wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
+            dir("./shopizer-2.9.0/sm-shop"){
+                sh """
+                   docker login -u phelun -p "docker_hub_passwd"
+                   docker build -t phelun/shopizer_app:v0."$BUILD_NUMBER" .
+                   docker push <your_username>/shopizer_app:v0."$BUILD_NUMBER"
+                """
+            } 
+        }
+    }
+
 }
