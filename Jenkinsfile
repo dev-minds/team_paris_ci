@@ -43,7 +43,7 @@ node() {
         wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']){
             dir("./shopizer-2.9.0/sm-shop/target"){
                 sh """
-                   ls -la 
+                   ls -lart
                 """
             } 
         }
